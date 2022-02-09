@@ -20,6 +20,7 @@ const book = {
     paginate: '',
     pagelist: null,
     offsetY: 0,
+    offsetX: 0,
     isBookmark: null,
     speakingIconBottom: realPx(58)
   },
@@ -77,6 +78,9 @@ const book = {
     },
     SET_OFFSETY(state, offsetY) {
       state.offsetY = offsetY
+    },
+    SET_OFFSETX(state, offsetX) {
+      state.offsetX = offsetX
     },
     SET_IS_BOOKMARK(state, isBookmark) {
       state.isBookmark = isBookmark

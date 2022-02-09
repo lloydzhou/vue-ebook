@@ -24,6 +24,7 @@ export const ebookMixin = {
       'paginate',
       'pagelist',
       'offsetY',
+      'offsetX',
       'isBookmark',
       'speakingIconBottom'
     ]),
@@ -51,6 +52,7 @@ export const ebookMixin = {
       'setPaginate',
       'setPagelist',
       'setOffsetY',
+      'setOffsetX',
       'setIsBookmark',
       'setSpeakingIconBottom'
     ]),
@@ -76,20 +78,27 @@ export const ebookMixin = {
     },
     refreshLocation() {
       const currentLocation = this.currentBook.rendition.currentLocation()
-      const startCfi = currentLocation.start.cfi
-      const progress = this.currentBook.locations.percentageFromCfi(startCfi)
-      this.setProgress(Math.floor(progress * 100))
-      saveLocation(this.fileName, startCfi)
+      console.log('currentLocation', currentLocation, this.currentBook.locations.currentLocation)
+      if (currentLocation && currentLocation.start) {
+        const startCfi = currentLocation.start.cfi
+        const progress = this.currentBook.locations.percentageFromCfi(startCfi)
+        this.setProgress(Math.floor(progress * 100))
+        saveLocation(this.fileName, startCfi)
+      }
     },
     display(target, cb) {
       if (target) {
-        this.currentBook.rendition.display(target).then(() => {
+        return this.currentBook.rendition.display(target).then((section) => {
+          console.log('display', section)
+          this.setSection(section.index)
           this.refreshLocation()
           // 保存进度后，如果回调函数存在，执行回调函数
           if (cb) cb()
         })
       } else {
-        this.currentBook.rendition.display().then(() => {
+        return this.currentBook.rendition.display().then((section) => {
+          console.log('display', section)
+          this.setSection(section.index)
           this.refreshLocation()
           if (cb) cb()
         })

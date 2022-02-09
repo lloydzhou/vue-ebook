@@ -80,6 +80,7 @@ export default {
   width: 100%;
   height: px2rem(90);
   box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
+  background: #fcfcfc;
   .setting-font-size {
     flex: 2;
     display: flex;
@@ -112,12 +113,14 @@ export default {
         .line {
           flex: 1;
           height: 0;
+          border-top: px2rem(1) solid #ccc;
         }
         .point-wrapper {
           position: relative;
           flex: 0 0 0;
           width: 0;
           height: px2rem(7);
+          border-left: px2rem(1) solid #ccc;
           .point {
             position: absolute;
             top: px2rem(-8);
@@ -125,7 +128,8 @@ export default {
             width: px2rem(20);
             height: px2rem(20);
             border-radius: 50%;
-            box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.15);
+            box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.3);
+            // border: px2rem(1) solid #ccc;
             @include center;
             .small-point {
               width: px2rem(5);

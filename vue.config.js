@@ -7,7 +7,15 @@ module.exports = {
     port: 9099,
     https: false,
     hotOnly: false,
-    proxy: null, // 设置代理
+    proxy: {
+      '/api/epub/moby-dick': {
+        target: 'http://192.168.50.129:9099/epub/moby-dick.epub',
+      },
+      '/api': {
+        target: 'https://strange.jianxun.io',
+        changeOrigin: true
+      },
+    }, // 设置代理
     before: app => {}
   }
 }

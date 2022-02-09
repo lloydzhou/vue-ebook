@@ -5,10 +5,6 @@
            :class="{'hide-box-shadow': settingVisible >= 0 || !menuVisible}"
            v-show="menuVisible">
         <div class="icon-wrapper">
-          <span class="icon-menu"
-                @click="showSetting(3)"></span>
-        </div>
-        <div class="icon-wrapper">
           <span class="icon-progress"
                 @click="showSetting(2)"></span>
         </div>
@@ -26,7 +22,6 @@
     <ebook-setting-font-popup></ebook-setting-font-popup>
     <ebook-setting-theme></ebook-setting-theme>
     <ebook-setting-progress></ebook-setting-progress>
-    <ebook-slide></ebook-slide>
   </div>
 </template>
 
@@ -36,15 +31,13 @@ import EbookSettingFontPopup from './EbookSettingFontPopup'
 import EbookSettingTheme from './EbookSettingTheme'
 import { ebookMixin } from '../../utils/mixin'
 import EbookSettingProgress from './EbookSettingProgress'
-import EbookSlide from './EbookSlide'
 export default {
   mixins: [ebookMixin],
   components: {
     EbookSettingFont,
     EbookSettingFontPopup,
     EbookSettingTheme,
-    EbookSettingProgress,
-    EbookSlide
+    EbookSettingProgress
   },
   methods: {
     showSetting (key) {

@@ -17,6 +17,7 @@ const book = {
   paginate: state => state.book.paginate,
   pagelist: state => state.book.pagelist,
   offsetY: state => state.book.offsetY,
+  offsetX: state => state.book.offsetX,
   isBookmark: state => state.book.isBookmark,
   speakingIconBottom: state => state.book.speakingIconBottom
 }

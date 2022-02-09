@@ -1,6 +1,5 @@
 <template>
   <div class="ebook" ref="ebook">
-    <ebook-title></ebook-title>
     <ebook-reader></ebook-reader>
     <ebook-menu></ebook-menu>
   </div>
@@ -8,7 +7,6 @@
 
 <script type="text/ecmascript-6">
 import EbookReader from '../../components/ebook/EbookReader'
-import EbookTitle from '../../components/ebook/EbookTitle'
 import EbookMenu from '../../components/ebook/EbookMenu'
 import { getReadTime, saveReadTime } from '../../utils/localStorage'
 import { ebookMixin } from '../../utils/mixin'
@@ -16,7 +14,6 @@ export default {
   mixins: [ebookMixin],
   components: {
     EbookReader,
-    EbookTitle,
     EbookMenu
   },
   watch: {
@@ -26,14 +23,25 @@ export default {
       } else {
         this.restore()
       }
+    },
+    offsetX (v) {
+      if (v !== 0) {
+        this.movex(v)
+      } else {
+        this.restore()
+      }
     }
   },
   methods: {
     move (v) {
       this.$refs.ebook.style.top = v + 'px'
     },
+    movex (v) {
+      // this.$refs.ebook.style.left = v + 'px'
+    },
     restore () {
       this.$refs.ebook.style.top = 0
+      this.$refs.ebook.style.left = 0
       this.$refs.ebook.style.transition = 'all .2s linear'
       setTimeout(() => {
         this.$refs.ebook.style.transition = ''

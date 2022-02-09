@@ -20,20 +20,37 @@ export default {
   mixins: [ebookMixin],
   methods: {
     move (e) {
-      let offsetY = 0
-      if (this.firstOffsetY) {
+      // let offsetY = 0
+      // if (this.firstOffsetY) {
+      //   // 拿最后一次move得offsetY的值减去第一次坐标点，得到初始-结束得偏移量
+      //   offsetY = e.changedTouches[0].clientY - this.firstOffsetY
+      //   this.setOffsetY(offsetY)
+      // } else {
+      //   this.firstOffsetY = e.changedTouches[0].clientY
+      // }
+      let offsetX = 0
+      if (this.firstOffsetX) {
         // 拿最后一次move得offsetY的值减去第一次坐标点，得到初始-结束得偏移量
-        offsetY = e.changedTouches[0].clientY - this.firstOffsetY
-        this.setOffsetY(offsetY)
+        offsetX = e.changedTouches[0].clientX - this.firstOffsetX
+        this.setOffsetX(offsetX)
       } else {
-        this.firstOffsetY = e.changedTouches[0].clientY
+        this.firstOffsetX = e.changedTouches[0].clientX
       }
       e.preventDefault()
       e.stopPropagation()
     },
     moveEnd (e) {
-      this.setOffsetY(0)
-      this.firstOffsetY = null
+      const width = window.innerWidth
+      console.log('moveEnd', this.offsetX, this.firstOffsetX, 'width', width * 0.3)
+      if (this.offsetX > width * 0.15) {
+        this.prevPage()
+      } else if (this.offsetX < -width * 0.15) {
+        this.nextPage()
+      }
+      this.setOffsetX(0)
+      this.firstOffsetX = null
+      // this.setOffsetY(0)
+      // this.firstOffsetY = null
     },
     onMaskClick (e) {
       const offsetX = e.offsetX
@@ -104,7 +121,8 @@ export default {
       this.rendition = this.book.renderTo('read', {
         width: innerWidth,
         height: innerHeight,
-        method: 'default'
+        method: 'default',
+        allowScriptedContent: true
       })
       const location = getLocation(this.fileName)
       this.display(location, () => {
@@ -115,7 +133,7 @@ export default {
         // 获取本地存储中的字体 刷新也不会丢失
         this.initFontFamily()
         // 设置全局样式
-        this.initGlobalStyle()
+        // this.initGlobalStyle()
       })
 
       // 通过epub的钩子函数改变iframe中字体
@@ -190,9 +208,15 @@ export default {
         this.setNavigation(navItem)
       })
     },
-    initEpub () {
-      const url = process.env.VUE_APP_RES_URL + '/epub/' + this.fileName + '.epub'
-      this.book = new Epub(url)
+    initEpub (url) {
+      // const url = process.env.VUE_APP_RES_URL + '/epub/' + this.fileName + '.epub'
+      console.log('url', url)
+      try {
+        this.book = new Epub(url)
+      } catch (e) {
+        console.log('Error', e)
+        this.book = new Epub(`${location.origin}/epub/moby-dick.epub`)
+      }
       this.setCurrentBook(this.book)
       this.initRendition()
       this.initGesture()
@@ -210,7 +234,21 @@ export default {
   mounted () {
     const fileName = this.$route.params.filename.split('|').join('/')
     this.setFileName(fileName).then(() => {
-      this.initEpub()
+      fetch(`/api/epub/${this.fileName}`).then(res => res.json()).then(res => {
+        if (res.url) {
+          return res
+        }
+        throw new Error()
+      }).catch(e => {
+        return { url: `${location.origin}/epub/moby-dick.epub`, name: '电子书' }
+      }).then(res => {
+        const { url, name } = res
+        console.log('url', url)
+        this.initEpub(process.env.NODE_ENV === 'production' ? url : `${location.origin}/epub/moby-dick.epub`)
+        if (name) {
+          document.title = name
+        }
+      })
     })
   }
 }

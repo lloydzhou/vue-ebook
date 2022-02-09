@@ -56,6 +56,9 @@ const actions = {
   setOffsetY({ commit }, offsetY) {
     return commit('SET_OFFSETY', offsetY)
   },
+  setOffsetX({ commit }, offsetX) {
+    return commit('SET_OFFSETX', offsetX)
+  },
   setSpeakingIconBottom({ commit }, speakingIconBottom) {
     commit('SET_SPEAKING_ICON_BOTTOM', speakingIconBottom)
   }

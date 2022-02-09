@@ -27,9 +27,11 @@ export default {
   methods: {
     setTheme (index) {
       const theme = this.themeList[index]
-      this.setDefaultTheme(theme.name).then(() => {
+      console.log('setTheme', this.themeList, index, theme)
+      this.setDefaultTheme(theme.name).then((e) => {
+        console.log('setTheme', theme.name, e, this.currentBook.rendition.themes)
         this.currentBook.rendition.themes.select(this.defaultTheme)
-        this.initGlobalStyle()
+        // this.initGlobalStyle()
       })
       saveTheme(this.fileName, theme.name)
     }

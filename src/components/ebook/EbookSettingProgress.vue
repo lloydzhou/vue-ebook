@@ -8,7 +8,7 @@
           <span class="icon-forward"></span>
         </div>
         <div class="progress-wrapper">
-          <div class="progress-icon-wrapper"
+          <div :class="`progress-icon-wrapper ${prevDiabled ? 'disabled' : ''}`"
                @click="prevSection">
             <span class="icon-back"></span>
           </div>
@@ -22,7 +22,7 @@
                  :value="progress"
                  :disabled="!bookAvailable"
                  ref="progress">
-          <div class="progress-icon-wrapper"
+          <div :class="`progress-icon-wrapper ${nextDiabled ? 'disabled' : ''}`"
                @click="nextSection">
             <span class="icon-forward"></span>
           </div>
@@ -47,12 +47,23 @@ export default {
   },
   computed: {
     getSectionName () {
-      if (this.section) {
+      console.log('getSectionName', this.section)
+      if (this.currentBook && this.section > -1) {
         const sectionInfo = this.currentBook.section(this.section)
         if (sectionInfo && sectionInfo.href && this.currentBook && this.currentBook.navigation) {
-          return this.currentBook.navigation.get(sectionInfo.href).label
+          console.log('getSectionName', this.currentBook.navigation, sectionInfo, this.currentBook.navigation.get(sectionInfo.href))
+          const t = this.currentBook.navigation.get(sectionInfo.href)
+          return t ? t.label : ''
+          // return this.currentBook.navigation.get(sectionInfo.href).label
         }
       }
+      return ''
+    },
+    prevDiabled () {
+      return !this.bookAvailable || this.section <= 0
+    },
+    nextDiabled () {
+      return !this.bookAvailable || this.section >= this.currentBook.spine.length - 1
     }
   },
   methods: {
@@ -79,7 +90,12 @@ export default {
     displaySection () {
       const sectionInfo = this.currentBook.section(this.section)
       if (sectionInfo && sectionInfo.href) {
-        this.display(sectionInfo.href)
+        // this.onProgressChange(parseInt(progress * 100))
+        this.display(sectionInfo.href, () => {
+          const progress = this.currentBook.locations.percentageFromCfi(sectionInfo.cfiFromRange())
+          console.log('progress', progress)
+          this.onProgressInput(parseInt(progress * 100))
+        })
       }
     },
     onProgressInput (progress) {
@@ -119,6 +135,7 @@ export default {
   width: 100%;
   height: px2rem(90);
   box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
+  background: #fcfcfc;
   .setting-progress {
     position: relative;
     width: 100%;
@@ -144,6 +161,7 @@ export default {
         -webkit-appearance: none;
         height: px2rem(2);
         margin: 0 px2rem(10);
+        background-color: #ceced0;
         &:focus {
           outline: none;
         }
@@ -161,6 +179,10 @@ export default {
         flex: 0 0 px2rem(22);
         font-size: px2rem(22);
         @include center;
+        &.disabled{
+          color: #999;
+          pointer-events: none;
+        }
       }
     }
     .text-wrapper {
