@@ -7,17 +7,25 @@
       @touchmove="move"
       @touchend="moveEnd"
     ></div>
+    <div class="loading" v-if="!ready"><EbookLoading /></div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import { ebookMixin } from '../../utils/mixin'
+import EbookLoading from './EbookLoading'
 import Epub from 'epubjs'
 import { Promise } from 'q'
 import { getFontFamily, saveFontFamily, saveFontSize, getFontSize, getTheme, saveTheme, getLocation } from '@/utils/localStorage'
 global.ePub = Epub
 export default {
   mixins: [ebookMixin],
+  components: {
+    EbookLoading
+  },
+  data: () => {
+    return { ready: false }
+  },
   methods: {
     move (e) {
       // let offsetY = 0
@@ -103,6 +111,7 @@ export default {
         this.rendition.themes.font(font)
         this.setDefaultFontFamily(font)
       }
+      this.ready = true
     },
     initTheme () {
       let defaultTheme = getTheme(this.fileName)
@@ -116,6 +125,7 @@ export default {
       })
       this.setDefaultTheme(defaultTheme)
       this.rendition.themes.select(defaultTheme)
+      this.ready = true
     },
     initRendition () {
       this.rendition = this.book.renderTo('read', {
@@ -266,6 +276,12 @@ export default {
     z-index: 150;
     width: 100%;
     height: 100%;
+  }
+  .loading{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
   }
 }
 </style>
